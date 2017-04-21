@@ -16,7 +16,7 @@
 When user passes a nifi version, say 1.1.2, the role goes to load variables corresponding to the version.
 If some nifi version is missing, please issue me or pull a request.)
 And download nifi package from apache server to `nifi_download_dir` of the local machine based on these variables.
-Then the role unarchives the package to `install_dir` of remote nodes, and do some configurations.
+Then the role unarchives the package to `nifi_install_dir` of remote nodes, and do some configurations.
 
 ## Role Main Variables
 
