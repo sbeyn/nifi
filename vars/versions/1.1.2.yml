@@ -1,0 +1,23 @@
+---
+nifi:
+  major_version: 1
+  minor_version: 1
+  patch_version: 2
+  build_tag: nifi-1.1.2-RC1
+  build_branch: NIFI-3486-RC1
+  build_revision: 744cfe6
+  build_timestamp: 2017-02-16T01:48:27Z
+  linux_md5_checksum: 06113cdc410fdd75d7a2a805c9d44777
+  windows_md5_checksum: 620e3e5403b7e8e10954580cfa39a350
+
+nifi-toolkit:
+  major_version: 1
+  minor_version: 1
+  patch_version: 2
+  md5_checksum: 6c8cb2891215be25eb8feeabbc5fcafb
+
+nssm:
+  major_version: 2
+  minor_version: 2
+  patch_version: 4
+  md5_checksum: b2edd0e4a7a7be9d157c0da0ef65b1bc

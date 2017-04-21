@@ -1,0 +1,71 @@
+---
+- name: Get Apache nifi package stat (local)
+  local_action: stat path={{ nifi_download_dir }}/nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.zip get_md5=yes
+  register: nifi_pkg
+  ignore_errors: true
+  check_mode: no
+  tags:
+    - nifi
+
+- name: Download nifi package (local)
+  local_action: command curl
+    --location
+    --insecure
+    --remote-name
+    --cookie-jar {{ nifi_download_dir }}/nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.zip.cookie
+    {{ nifi_mirror_base }}/nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.zip
+    chdir={{ nifi_download_dir }}
+  check_mode: no
+  when: not nifi_pkg.stat.exists or nifi_pkg.stat.md5 != "{{ nifi.windows_md5_checksum }}"
+  tags:
+    - nifi
+
+- name: Check nifi install dir {{ install_dir }} ({{ play_hosts | join(',') }})
+  win_file: state=directory path={{ install_dir }}
+  check_mode: no
+  tags: nifi
+
+- name: Copy nifi package on ({{ play_hosts | join(',') }})
+  win_copy:
+    src: "{{ nifi_download_dir }}/nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.zip"
+    dest: "{{ install_dir }}"
+  notify: install nifi_Windows
+  check_mode: no
+  tags: nifi
+
+- name: Install nifi {{ install_dir }}\nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.zip to remote nodes {{ install_dir }}\\nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }} ({{ play_hosts | join(',') }})
+  win_unzip:
+    src={{ install_dir }}\\nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.zip
+    dest={{ install_dir }}
+    recurse=yes
+    rm=false
+  notify: install nifi_Windows
+  check_mode: no
+  tags: nifi
+
+- name: Copy files keystore and trustestore ({{ play_hosts | join(',') }})
+  win_copy:
+    src: "{{ nifi_download_dir }}/pki/{{ nifi_authorizer_dn }}/{{ inventory_hostname }}"
+    dest: "{{ install_dir }}/{{ nifi_dir_name }}/jks"
+  check_mode: no
+  notify: clear auth_Windows
+  when: nifi_auto_keystore
+  tags: nifi
+
+- name: Create nifi zookeeper state directory ({{ play_hosts | join(',') }})
+  win_file: path={{ install_dir }}\\{{ nifi_dir_name }}\\state\\zookeeper state=directory mode=0775
+  check_mode: no
+  tags: nifi
+
+- name: Create ID Zookeeper by node ({{ play_hosts | join(',') }})
+  win_template: src=templates/myid.j2 dest={{ install_dir }}\\{{ nifi_dir_name }}\\state\\zookeeper\\myid
+  check_mode: no
+  tags: nifi
+
+- name: Copy template to remote node ({{ play_hosts | join(',') }})
+  win_template: src={{ item }} dest={{ install_dir }}\\{{ nifi_dir_name }}\\conf\\{{ item | basename | regex_replace('.j2','') }}
+  with_fileglob:
+   - templates/{{ nifi_secure }}/*.j2
+  check_mode: no
+  notify: restart nifi_Windows
+  tags: nifi

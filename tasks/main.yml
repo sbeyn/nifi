@@ -1,0 +1,21 @@
+---
+- name: Assert platform is supported
+  assert:
+    that:
+      - ansible_os_family in ['Debian', 'RedHat', 'Windows']
+      - ansible_architecture in ['x86_64', '64 bits']
+  tags:
+    - nifi
+
+- name: Load version variables
+  include_vars: "versions/{{ nifi_version }}.yml"
+  tags:
+    - nifi
+
+- name: Check nifi download directory (local)
+  local_action: file state=directory mode=0755 dest={{ nifi_download_dir }}
+  tags:
+    - nifi
+
+- include: "keystore.yml"
+- include: "{{ ansible_system }}.yml"

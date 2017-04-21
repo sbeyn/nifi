@@ -1,0 +1,57 @@
+---
+- name: Get Apache nifi package stat (local)
+  local_action: stat path={{ nifi_download_dir }}/nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.tar.gz get_md5=yes
+  register: nifi_pkg
+  ignore_errors: true
+  tags:
+    - nifi
+
+- name: Download nifi package (local)
+  local_action: command curl
+    --location
+    --insecure
+    --remote-name
+    --cookie-jar {{ nifi_download_dir }}/nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.tar.gz.cookie
+    {{ nifi_base_mirror }}/nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.tar.gz
+    chdir={{ nifi_download_dir }}
+  when: not nifi_pkg.stat.exists or nifi_pkg.stat.md5 != "{{ nifi.linux_md5_checksum }}"
+  tags:
+    - nifi
+
+- name: Check nifi install dir ({{ play_hosts | join(',') }})
+  file: state=directory mode=0755 path={{ install_dir }}
+  tags: nifi
+
+- name: Install nifi to remote node ({{ play_hosts | join(',') }})
+  unarchive:
+    src={{ nifi_download_dir }}/nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.tar.gz
+    dest={{ install_dir }}
+    mode=0755
+    creates={{ install_dir }}/{{ nifi_dir_name }}
+  notify: install nifi_Linux
+  tags: nifi
+
+- name: Copy files keystore and trustestore ({{ play_hosts | join(',') }})
+  copy:
+    src: "{{ nifi_download_dir }}/pki/{{ nifi_authorizer_dn }}/{{ inventory_hostname }}"
+    dest: "{{ install_dir }}/{{ nifi_dir_name }}/jks"
+  when: nifi_auto_keystore
+  notify:
+   - remove clear auth_Linux
+  tags: nifi
+
+- name: Create nifi zookeeper state directory ({{ play_hosts | join(',') }})
+  file: path={{ install_dir }}/{{ nifi_dir_name }}/state/zookeeper state=directory mode=0775
+  tags: nifi
+
+- name: Create ID Zookeeper by node ({{ play_hosts | join(',') }}) 
+  template: src=templates/myid.j2 dest={{ install_dir }}/{{ nifi_dir_name }}/state/zookeeper/myid
+  tags: nifi
+
+- name: Copy template to remote node ({{ play_hosts | join(',') }})
+  template: src={{ item }} dest={{ install_dir }}/{{ nifi_dir_name }}/conf/{{ item | basename | regex_replace('.j2','') }}
+  with_fileglob:
+   - templates/{{ nifi_secure }}/*.j2
+  notify:
+   - restart nifi_Linux
+  tags: nifi

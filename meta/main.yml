@@ -1,0 +1,27 @@
+---
+galaxy_info:
+  author: sbeyn
+  description: Install Apache Nifi for RHEL/CentOS, Debian/Ubuntu and Windows 
+  license: "license (MIT)"
+  min_ansible_version: 1.8
+  platforms:
+  - name: Windows
+    versions:
+    - 2008
+    - 2012
+  - name: Debian
+    versions:
+    - all
+  - name: Ubuntu
+    versions:
+    - all
+  - name: CentOS
+    versions:
+    - all
+  - name: RedHat
+    versions:
+    - all
+  categories:
+    - development
+    - system
+    - web

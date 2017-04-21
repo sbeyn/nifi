@@ -1,0 +1,54 @@
+---
+nifi_version: 1.1.2
+nifi_install_dir: "{{ansible_env['HOME']}}"
+nifi_download_dir: "/tmp/nifi"
+nifi_base_directory: .
+nifi_log_level: INFO
+nifi_auto_keystore: true
+nifi_secure: none
+nifi_cluster: false
+nifi_database_directory: "{{ nifi_base_directory }}/database_repository"
+nifi_flowfile_repository_directory: "{{ nifi_base_directory }}/flowfile_repository"
+nifi_content_repository_directory_default: "{{ nifi_base_directory }}/content_repository"
+nifi_provenance_repository_directory_default: "{{ nifi_base_directory }}/provenance_repository"
+nifi_remote_input_socket_port: 9998
+nifi_web_http_port: 8080
+nifi_web_https_port: 9443
+nifi_security_keystore:
+nifi_security_keystoreType: jks
+nifi_security_keystorePasswd:
+nifi_security_keyPasswd:
+nifi_security_truststore:
+nifi_security_truststoreType: jks
+nifi_security_truststorePasswd:
+nifi_security_user_authorizer: file-provider
+nifi_cluster_node_protocol_port: 9999
+nifi_cluster_node_protocol_threads: 10
+nifi_zookeeper_clientPort: 2181
+nifi_kerberos_krb5_file: 
+nifi_kerberos_service_principal: 
+nifi_kerberos_service_keytab_location: 
+nifi_variable_registry_properties:
+nifi_jvm_xms: 512m
+nifi_jvm_xmx: 512m
+nifi_authorizer_dn: "OU=NIFI"
+nifi_authorizer_admin_identity: "CN=admininit, {{ nifi_authorizer_dn }}"
+nifi_authorizer_users_file:
+nifi_ldap_provider_auth_strategy: SIMPLE
+nifi_ldap_provider_manager_dn:
+nifi_ldap_provider_manager_password:
+nifi_ldap_provider_referral_strategy: FOLLOW
+nifi_ldap_provider_url:
+nifi_ldap_provider_search_base:
+nifi_ldap_provider_search_filter:
+nifi_ldap_provider_identity_strategy: USE_USERNAME
+nifi_ldap_provider_tls_keystore:  
+nifi_ldap_provider_tls_keystore_password:  
+nifi_ldap_provider_tls_keystore_type: 
+nifi_ldap_provider_tls_truststore: 
+nifi_ldap_provider_tls_password: 
+nifi_ldap_provider_tls_client: 
+nifi_ldap_provider_tls_type:
+nifi_ldap_provider_tls_protocol: 
+nifi_ldap_provider_tls_shutdown: 
+nifi_kerberos_provider_realm:
