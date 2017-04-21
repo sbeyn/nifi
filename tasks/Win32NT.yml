@@ -29,7 +29,6 @@
   win_copy:
     src: "{{ nifi_download_dir }}/nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.zip"
     dest: "{{ install_dir }}"
-  notify: install nifi_Windows
   check_mode: no
   tags: nifi
 
@@ -39,7 +38,6 @@
     dest={{ install_dir }}
     recurse=yes
     rm=false
-  notify: install nifi_Windows
   check_mode: no
   tags: nifi
 
@@ -67,5 +65,7 @@
   with_fileglob:
    - templates/{{ nifi_secure }}/*.j2
   check_mode: no
-  notify: restart nifi_Windows
+  notify: 
+    - install nifi_Windows
+    - restart nifi_Windows
   tags: nifi

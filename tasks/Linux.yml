@@ -28,7 +28,6 @@
     dest={{ install_dir }}
     mode=0755
     creates={{ install_dir }}/{{ nifi_dir_name }}
-  notify: install nifi_Linux
   tags: nifi
 
 - name: Copy files keystore and trustestore ({{ play_hosts | join(',') }})
@@ -36,8 +35,7 @@
     src: "{{ nifi_download_dir }}/pki/{{ nifi_authorizer_dn }}/{{ inventory_hostname }}"
     dest: "{{ install_dir }}/{{ nifi_dir_name }}/jks"
   when: nifi_auto_keystore
-  notify:
-   - remove clear auth_Linux
+  notify: remove clear auth_Linux
   tags: nifi
 
 - name: Create nifi zookeeper state directory ({{ play_hosts | join(',') }})
@@ -53,5 +51,6 @@
   with_fileglob:
    - templates/{{ nifi_secure }}/*.j2
   notify:
+   - install nifi_Linux
    - restart nifi_Linux
   tags: nifi
