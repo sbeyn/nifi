@@ -1,5 +1,5 @@
 ---
 # helper variables
-nifi_mirror_base: "http://apache.mediamirrors.org/nifi/{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}"
+nifi_base_mirror: "http://apache.mediamirrors.org/nifi/{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}"
 nifi_dir_name: "nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}"
-nifi_toolkit_dir_name: "nifi-toolkit-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}"
+nifi_toolkit_dir_name: "nifi-toolkit-{{ nifi_toolkit.major_version }}.{{ nifi_toolkit.minor_version }}.{{ nifi_toolkit.patch_version }}"

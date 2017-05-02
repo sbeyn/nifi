@@ -10,7 +10,7 @@ nifi:
   linux_md5_checksum: 06113cdc410fdd75d7a2a805c9d44777
   windows_md5_checksum: 620e3e5403b7e8e10954580cfa39a350
 
-nifi-toolkit:
+nifi_toolkit:
   major_version: 1
   minor_version: 1
   patch_version: 2

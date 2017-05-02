@@ -4,7 +4,7 @@ nifi_install_dir: "{{ansible_env['HOME']}}"
 nifi_download_dir: "/tmp/nifi"
 nifi_base_directory: ".."
 nifi_log_level: INFO
-nifi_auto_keystore: true
+nifi_auto_keystore: false
 nifi_secure: none
 nifi_cluster: false
 nifi_bored_yield_duration: "10 millis"
