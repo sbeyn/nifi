@@ -2,7 +2,7 @@
 nifi_version: 1.1.2
 nifi_install_dir: "{{ansible_env['HOME']}}"
 nifi_download_dir: "/tmp/nifi"
-nifi_base_directory: .
+nifi_base_directory: ".."
 nifi_log_level: INFO
 nifi_auto_keystore: true
 nifi_secure: none
