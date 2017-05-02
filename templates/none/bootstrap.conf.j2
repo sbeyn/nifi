@@ -25,8 +25,8 @@ java=java
 run.as=
 
 # Configure where NiFi's lib and conf directories live
-lib.dir={{ nifi_base_directory }}/lib
-conf.dir={{ nifi_base_directory }}/conf
+lib.dir=./lib
+conf.dir={{ nifi_install_dir }}/conf
 
 # How long to wait after telling NiFi to shutdown before explicitly killing the Process
 graceful.shutdown.seconds=20
@@ -67,7 +67,7 @@ nifi.bootstrap.sensitive.key=
 ###
 
 # XML File that contains the definitions of the notification services
-notification.services.file={{ nifi_base_directory }}/conf/bootstrap-notification-services.xml
+notification.services.file={{ nifi_install_dir }}/conf/bootstrap-notification-services.xml
 
 # In the case that we are unable to send a notification for an event, how many times should we retry?
 notification.max.attempts=5
