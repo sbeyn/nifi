@@ -19,10 +19,10 @@
 # The java implementation to use.
 #export JAVA_HOME=/usr/java/jdk1.8.0/
 
-export NIFI_HOME="{{ nifi_install_dir }}"
+export NIFI_HOME=$(cd "${SCRIPT_DIR}" && cd .. && pwd)
 
 #The directory for the NiFi pid file
-export NIFI_PID_DIR="%NIFI_ROOT%/run"
+export NIFI_PID_DIR="{{ nifi_install_dir }}/run"
 
 #The directory for NiFi log files
-export NIFI_LOG_DIR="%NIFI_ROOT%/logs"
+export NIFI_LOG_DIR="{{ nifi_install_dir }}/logs"

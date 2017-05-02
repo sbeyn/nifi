@@ -64,9 +64,8 @@
   tags: nifi
 
 - name: Copy template nifi-env to remote node.
-  template: src=templates/nifi-env.sh.j2 dest={{ nifi_install_dir }}/{{ nifi_dir_name }}/bin/nifi-env.sh
+  template: src=templates/nifi-env.sh.j2 dest=/etc/profile.d/nifi-env.sh
   notify:
-   - env nifi_Linux
    - restart nifi_Linux
   tags: nifi
 
