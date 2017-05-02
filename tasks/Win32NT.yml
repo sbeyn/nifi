@@ -49,28 +49,32 @@
 - name: Copy files keystore and trustestore.
   win_copy:
     src: "{{ nifi_download_dir }}/pki/{{ nifi_authorizer_dn }}/{{ inventory_hostname }}"
-    dest: "{{ nifi_install_dir }}/{{ nifi_dir_name }}/jks"
+    dest: "{{ nifi_install_dir }}\\jks"
   check_mode: no
   notify: clear auth_Windows
   when: nifi_auto_keystore
   tags: nifi
 
-- name: Create nifi zookeeper state directory {{ nifi_install_dir }}\\{{ nifi_dir_name }}\\state\\zookeeper.
-  win_file: path={{ nifi_install_dir }}\\{{ nifi_dir_name }}\\state\\zookeeper state=directory mode=0775
+- name: Create nifi zookeeper state directory {{ nifi_install_dir }}\\state\\zookeeper.
+  win_file: path={{ nifi_install_dir }}\\state\\zookeeper state=directory mode=0775
   check_mode: no
   tags: nifi
 
 - name: Create ID Zookeeper by node.
-  win_template: src=templates/myid.j2 dest={{ nifi_install_dir }}\\{{ nifi_dir_name }}\\state\\zookeeper\\myid
+  win_template: src=templates/myid.j2 dest={{ nifi_install_dir }}\\state\\zookeeper\\myid
+  check_mode: no
+  tags: nifi
+
+- name: Create nifi zookeeper state directory {{ nifi_install_dir }}\\conf.
+  win_file: path={{ nifi_install_dir }}\\conf state=directory mode=0775
   check_mode: no
   tags: nifi
 
 - name: Copy template to remote node.
-  win_template: src={{ item }} dest={{ nifi_install_dir }}\\{{ nifi_dir_name }}\\conf\\{{ item | basename | regex_replace('.j2','') }}
+  win_template: src={{ item }} dest={{ nifi_install_dir }}\\conf\\{{ item | basename | regex_replace('.j2','') }}
   with_fileglob:
    - templates/{{ nifi_secure }}/*.j2
   check_mode: no
   notify: 
-    - install nifi_Windows
     - restart nifi_Windows
   tags: nifi

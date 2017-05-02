@@ -33,21 +33,25 @@
 - name: Copy files keystore and trustestore.
   copy:
     src: "{{ nifi_download_dir }}/pki/{{ nifi_authorizer_dn }}/{{ inventory_hostname }}"
-    dest: "{{ nifi_install_dir }}/{{ nifi_dir_name }}/jks"
+    dest: "{{ nifi_install_dir }}/jks"
   when: nifi_auto_keystore
   notify: remove clear auth_Linux
   tags: nifi
 
-- name: Create nifi zookeeper state directory {{ nifi_install_dir }}/{{ nifi_dir_name }}/state/zookeeper.
-  file: path={{ nifi_install_dir }}/{{ nifi_dir_name }}/state/zookeeper state=directory mode=0775
+- name: Create nifi zookeeper state directory {{ nifi_install_dir }}/state/zookeeper.
+  file: path={{ nifi_install_dir }}/state/zookeeper state=directory mode=0775
   tags: nifi
 
 - name: Create ID Zookeeper by node. 
-  template: src=templates/myid.j2 dest={{ nifi_install_dir }}/{{ nifi_dir_name }}/state/zookeeper/myid
+  template: src=templates/myid.j2 dest={{ nifi_install_dir }}/state/zookeeper/myid
+  tags: nifi
+
+- name: Create nifi conf directory {{ nifi_install_dir }}/conf.
+  file: path={{ nifi_install_dir }}/conf state=directory mode=0775
   tags: nifi
 
 - name: Copy template to remote node.
-  template: src={{ item }} dest={{ nifi_install_dir }}/{{ nifi_dir_name }}/conf/{{ item | basename | regex_replace('.j2','') }}
+  template: src={{ item }} dest={{ nifi_install_dir }}/conf/{{ item | basename | regex_replace('.j2','') }}
   with_fileglob:
    - templates/{{ nifi_secure }}/*.j2
   notify:
