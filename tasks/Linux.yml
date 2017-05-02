@@ -30,6 +30,17 @@
     creates={{ nifi_install_dir }}/{{ nifi_dir_name }}
   tags: nifi
 
+- name: Create directories require.
+  file: path={{ nifi_install_dir }}/{{item }} state=directory mode=0775
+  with_items:
+    - content_repository
+    - database_repository
+    - flowfile_repository
+    - logs
+    - provenance_repository
+    - work
+  tags: nifi
+
 - name: Copy files keystore and trustestore.
   copy:
     src: "{{ nifi_download_dir }}/pki/{{ nifi_authorizer_dn }}/{{ inventory_hostname }}"

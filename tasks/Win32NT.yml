@@ -41,6 +41,17 @@
   check_mode: no
   tags: nifi
 
+- name: Create directories require.
+  win_file: path={{ nifi_install_dir }}\\{{item }} state=directory mode=0775
+  with_items:
+    - content_repository
+    - database_repository
+    - flowfile_repository
+    - logs
+    - provenance_repository
+    - work
+  tags: nifi
+
 - name: Start Apache Nifi Windows Service. 
   win_nssm: name=NifiService application="{{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\run-nifi.bat" start_mode=manual
   check_mode: no
