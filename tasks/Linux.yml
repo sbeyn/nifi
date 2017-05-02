@@ -35,7 +35,7 @@
     src: "{{ nifi_download_dir }}/pki/{{ nifi_authorizer_dn }}/{{ inventory_hostname }}"
     dest: "{{ nifi_install_dir }}/jks"
   when: nifi_auto_keystore
-  notify: remove clear auth_Linux
+  notify: clear auth_Linux
   tags: nifi
 
 - name: Create nifi zookeeper state directory {{ nifi_install_dir }}/state/zookeeper.
