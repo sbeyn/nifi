@@ -81,6 +81,12 @@
   check_mode: no
   tags: nifi
 
+- name: Copy template nifi-env to remote node.
+  win_template: src=templates/nifi-env.bat.j2 dest={{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\nifi-env.bat
+  notify:
+   - restart nifi_Windows
+  tags: nifi
+
 - name: Copy template to remote node.
   win_template: src={{ item }} dest={{ nifi_install_dir }}\\conf\\{{ item | basename | regex_replace('.j2','') }}
   with_fileglob:
