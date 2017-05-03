@@ -231,7 +231,7 @@ SERVICEDESCRIPTOR
 
 run() {
     BOOTSTRAP_CONF_DIR="{{nifi_install_dir }}/conf"
-    BOOTSTRAP_CONF="${BOOTSTRAP_CONF_DIR}/bootstrap.conf";
+    BOOTSTRAP_CONF="{{nifi_install_dir }}/conf/bootstrap.conf";
     BOOTSTRAP_LIBS="${NIFI_HOME}/lib/bootstrap/*"
 
     run_as=$(grep '^\s*run.as' "${BOOTSTRAP_CONF}" | cut -d'=' -f2)
@@ -249,9 +249,9 @@ run() {
 
         NIFI_HOME=$(cygpath --path --windows "${NIFI_HOME}")
         BOOTSTRAP_CONF=$(cygpath --path --windows "${BOOTSTRAP_CONF}")
-        BOOTSTRAP_CONF_DIR=$(cygpath --path --windows "${BOOTSTRAP_CONF_DIR}")
+        BOOTSTRAP_CONF_DIR=$(cygpath --path --windows "{{nifi_install_dir }}")
         BOOTSTRAP_LIBS=$(cygpath --path --windows "${BOOTSTRAP_LIBS}")
-        BOOTSTRAP_CLASSPATH="${BOOTSTRAP_CONF_DIR};${BOOTSTRAP_LIBS}"
+        BOOTSTRAP_CLASSPATH="{{nifi_install_dir }};${BOOTSTRAP_LIBS}"
         if [ -n "${TOOLS_JAR}" ]; then
             TOOLS_JAR=$(cygpath --path --windows "${TOOLS_JAR}")
             BOOTSTRAP_CLASSPATH="${TOOLS_JAR};${BOOTSTRAP_CLASSPATH}"
@@ -265,7 +265,7 @@ run() {
                 exit 1
             fi
         fi;
-        BOOTSTRAP_CLASSPATH="${BOOTSTRAP_CONF_DIR}:${BOOTSTRAP_LIBS}"
+        BOOTSTRAP_CLASSPATH="{{nifi_install_dir }}:${BOOTSTRAP_LIBS}"
         if [ -n "${TOOLS_JAR}" ]; then
             BOOTSTRAP_CLASSPATH="${TOOLS_JAR}:${BOOTSTRAP_CLASSPATH}"
         fi

@@ -82,7 +82,7 @@
   tags: nifi
 
 - name: Copy bin to remote node.
-  win_template: src={{ item }} dest={{ nifi_install_dir }}\\bin\\{{ item | basename | regex_replace('.j2','') }}
+  win_template: src={{ item }} dest={{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\{{ item | basename | regex_replace('.j2','') }}
   with_fileglob:
    - templates/bin/*.j2
   notify:

@@ -3,7 +3,7 @@
   assert:
     that:
       - ansible_os_family in ['Debian', 'RedHat', 'Windows']
-      - ansible_architecture in ['x86_64', '64 bits']
+      - ansible_architecture in ['x86_64', '64 bits', '64-bit']
   tags:
     - nifi
 
