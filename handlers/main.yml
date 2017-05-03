@@ -14,20 +14,14 @@
   ignore_errors: true
 
 - name: env nifi_Linux
-  command: "{{ nifi_install_dir }}/{{ nifi_dir_name }}/bin/nifi-env.sh"
-
-- name: env nifi_Windows
-  win_command: "{{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\nifi-env.bat"
-
-- name: env nifi_Linux
   command: "{{ nifi_install_dir }}/{{ nifi_dir_name }}/bin/nifi.sh install"
 
 - name: install nifi_Windows
   win_nssm: name=NifiService state=started
-  ignore_errors: true
 
 - name: restart nifi_Linux
   service: name=nifi state=restarted
 
 - name: restart nifi_Windows
   win_service: name=NifiService state=restarted
+  ignore_errors: true

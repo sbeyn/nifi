@@ -41,6 +41,7 @@
     - logs
     - provenance_repository
     - work
+    - run
   tags: nifi
 
 - name: Copy files keystore and trustestore.
@@ -56,7 +57,7 @@
   tags: nifi
 
 - name: Create ID Zookeeper by node. 
-  template: src=templates/myid.j2 dest={{ nifi_install_dir }}/state/zookeeper/myid
+  template: src=templates/main/state/myid.j2 dest={{ nifi_install_dir }}/state/zookeeper/myid
   tags: nifi
 
 - name: Create nifi conf directory {{ nifi_install_dir }}/conf.
@@ -66,16 +67,16 @@
 - name: Copy bin to remote node.
   template: src={{ item }} dest={{ nifi_install_dir }}/{{ nifi_dir_name }}/bin/{{ item | basename | regex_replace('.j2','') }}
   with_fileglob:
-   - templates/bin/*.j2
+   - templates/main/bin/*.j2
   notify:
-   - env nifi_Linux
    - restart nifi_Linux
   tags: nifi
 
 - name: Copy configurations to remote node.
   template: src={{ item }} dest={{ nifi_install_dir }}/conf/{{ item | basename | regex_replace('.j2','') }}
   with_fileglob:
-   - templates/{{ nifi_secure }}/*.j2
+   - templates/main/conf/*.j2
+   - templates/auth/{{ nifi_secure }}/conf/*.j2
   notify:
    - restart nifi_Linux
   tags: nifi

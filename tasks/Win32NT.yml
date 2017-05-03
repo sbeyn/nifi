@@ -38,6 +38,7 @@
     dest={{ nifi_install_dir }}
     recurse=yes
     rm=false
+  ignore_errors: true
   check_mode: no
   tags: nifi
 
@@ -53,7 +54,14 @@
   tags: nifi
 
 - name: Start Apache Nifi Windows Service. 
-  win_nssm: name=NifiService application="{{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\run-nifi.bat" start_mode=manual
+  #win_nssm: name=NifiService application="{{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\run-nifi.bat" start_mode=auto user={{ ansible_user_id }} password={{ ansible_ssh_pass }}
+  win_nssm:
+    name: NifiService
+    application: "C:\\Program Files\\nifi\\nifi-1.1.2\\bin\\run-nifi.bat"
+    start_mode: auto
+    user: "{{ ansible_user_id }}"
+    password: "{{ ansible_ssh_pass }}"
+  ignore_errors: true
   check_mode: no
   tags: nifi
 
@@ -72,7 +80,7 @@
   tags: nifi
 
 - name: Create ID Zookeeper by node.
-  win_template: src=templates/myid.j2 dest={{ nifi_install_dir }}\\state\\zookeeper\\myid
+  win_template: src=templates/main/state/myid.j2 dest={{ nifi_install_dir }}\\state\\zookeeper\\myid
   check_mode: no
   tags: nifi
 
@@ -81,19 +89,19 @@
   check_mode: no
   tags: nifi
 
-- name: Copy bin to remote node.
-  win_template: src={{ item }} dest={{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\{{ item | basename | regex_replace('.j2','') }}
-  with_fileglob:
-   - templates/bin/*.j2
-  notify:
-   - env nifi_Windows
-   - restart nifi_Windows
-  tags: nifi
+#- name: Copy bin to remote node.
+#  win_template: src={{ item }} dest={{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\{{ item | basename | regex_replace('.j2','') }}
+#  with_fileglob:
+#   - templates/main/bin/*.j2
+#  notify:
+#   - restart nifi_Windows
+#  tags: nifi
 
-- name: Copy template to remote node.
+- name: Copy conf to remote node.
   win_template: src={{ item }} dest={{ nifi_install_dir }}\\conf\\{{ item | basename | regex_replace('.j2','') }}
   with_fileglob:
-   - templates/{{ nifi_secure }}/*.j2
+   - templates/main/conf/*.j2
+   - templates/auth/{{ nifi_secure }}/conf/*.j2
   check_mode: no
   notify: 
     - restart nifi_Windows

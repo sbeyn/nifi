@@ -4,6 +4,9 @@ nifi_install_dir: "{{ansible_env['HOME']}}"
 nifi_download_dir: "/tmp/nifi"
 nifi_base_directory: ".."
 nifi_log_level: INFO
+nifi_log_syslog: false
+nifi_log_syslog_host: localhost
+nifi_log_syslog_port: 514
 nifi_auto_keystore: false
 nifi_secure: none
 nifi_cluster: false
