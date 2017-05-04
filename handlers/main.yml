@@ -23,5 +23,5 @@
   service: name=nifi state=restarted
 
 - name: restart nifi_Windows
-  win_service: name=NifiService state=restarted
+  win_nssm: name=NifiService application="{{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\run-nifi.bat" start_mode=auto state=restarted
   ignore_errors: true

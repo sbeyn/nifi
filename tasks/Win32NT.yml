@@ -32,7 +32,7 @@
   check_mode: no
   tags: nifi
 
-- name: Install nifi {{ nifi_install_dir }}\nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.zip to remote node.
+- name: Install Apache Nifi {{ nifi_install_dir }}\nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.zip to remote node.
   win_unzip:
     src={{ nifi_install_dir }}\\nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.zip
     dest={{ nifi_install_dir }}
@@ -54,13 +54,7 @@
   tags: nifi
 
 - name: Start Apache Nifi Windows Service. 
-  #win_nssm: name=NifiService application="{{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\run-nifi.bat" start_mode=auto user={{ ansible_user_id }} password={{ ansible_ssh_pass }}
-  win_nssm:
-    name: NifiService
-    application: "C:\\Program Files\\nifi\\nifi-1.1.2\\bin\\run-nifi.bat"
-    start_mode: auto
-    user: "{{ ansible_user_id }}"
-    password: "{{ ansible_ssh_pass }}"
+  win_nssm: name=NifiService application="C:\\Program Files\\nifi\\nifi-1.1.2\\bin\\run-nifi.bat" start_mode=manual user="{{ansible_env.USERDOMAIN}}\\{{ansible_user_id}}" password={{ansible_ssh_pass}}
   ignore_errors: true
   check_mode: no
   tags: nifi
@@ -89,13 +83,13 @@
   check_mode: no
   tags: nifi
 
-#- name: Copy bin to remote node.
-#  win_template: src={{ item }} dest={{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\{{ item | basename | regex_replace('.j2','') }}
-#  with_fileglob:
-#   - templates/main/bin/*.j2
-#  notify:
-#   - restart nifi_Windows
-#  tags: nifi
+- name: Copy bin to remote node.
+  win_template: src={{ item }} dest={{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\{{ item | basename | regex_replace('.j2','') }}
+  with_fileglob:
+   - templates/main/bin/*.j2
+  notify:
+   - restart nifi_Windows
+  tags: nifi
 
 - name: Copy conf to remote node.
   win_template: src={{ item }} dest={{ nifi_install_dir }}\\conf\\{{ item | basename | regex_replace('.j2','') }}
