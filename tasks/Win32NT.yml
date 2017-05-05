@@ -12,7 +12,7 @@
     --location
     --insecure
     --remote-name
-    --cookie-jar {{ nifi_download_dir }}/nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.zip.cookie
+    --cookie-jar {{ nifi_download_dir }}/{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.zip.cookie
     {{ nifi_base_mirror }}/nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.zip
     chdir={{ nifi_download_dir }}
   check_mode: no
