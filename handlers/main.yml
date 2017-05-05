@@ -12,7 +12,7 @@
     - authorizations.xml
 
 - name: install nifi_Linux
-  shell: {{ nifi_install_dir }}/{{ nifi_dir_name }}/bin/nifi.sh install
+  shell: '{{ nifi_install_dir }}/{{ nifi_dir_name }}/bin/nifi.sh install'
 
 - name: install nifi_Windows
   win_nssm: name=NifiService state=started
