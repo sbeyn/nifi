@@ -152,7 +152,7 @@ nifi.cluster.flow.election.max.wait.time=5 mins
 nifi.cluster.flow.election.max.candidates=
 
 # zookeeper properties, used for cluster management #
-nifi.zookeeper.connect.string={% for h in play_hosts %}{{ h ~ ":" ~ nifi_zookeeper_clientPort }}{% if not loop.last %},{% endif %}{% endfor %}{{"\n"}} 
+nifi.zookeeper.connect.string={% for h in play_hosts|sort %}{{ h ~ ":" ~ nifi_zookeeper_clientPort }}{% if not loop.last %},{% endif %}{% endfor %}{{"\n"}} 
 nifi.zookeeper.session.timeout=3 secs
 nifi.zookeeper.root.node=/nifi
 

@@ -39,12 +39,12 @@ nifi.state.management.embedded.zookeeper.properties=./conf/zookeeper.properties
 
 
 # H2 Settings
-nifi.database.directory={{ nifi_base_directory }}/database_repository
+nifi.database.directory=../data/database_repository
 nifi.h2.url.append=;LOCK_TIMEOUT=25000;WRITE_DELAY=0;AUTO_SERVER=FALSE
 
 # FlowFile Repository
 nifi.flowfile.repository.implementation=org.apache.nifi.controller.repository.WriteAheadFlowFileRepository
-nifi.flowfile.repository.directory={{ nifi_base_directory }}/flowfile_repository
+nifi.flowfile.repository.directory=../data/flowfile_repository
 nifi.flowfile.repository.partitions=256
 nifi.flowfile.repository.checkpoint.interval=2 mins
 nifi.flowfile.repository.always.sync=false
@@ -60,7 +60,7 @@ nifi.swap.out.threads=4
 nifi.content.repository.implementation=org.apache.nifi.controller.repository.FileSystemRepository
 nifi.content.claim.max.appendable.size=10 MB
 nifi.content.claim.max.flow.files=100
-nifi.content.repository.directory.default={{ nifi_base_directory }}/content_repository
+nifi.content.repository.directory.default=../data/content_repository
 nifi.content.repository.archive.max.retention.period=12 hours
 nifi.content.repository.archive.max.usage.percentage=50%
 nifi.content.repository.archive.enabled=true
@@ -71,7 +71,7 @@ nifi.content.viewer.url=/nifi-content-viewer/
 nifi.provenance.repository.implementation=org.apache.nifi.provenance.PersistentProvenanceRepository
 
 # Persistent Provenance Repository Properties
-nifi.provenance.repository.directory.default={{ nifi_base_directory }}/provenance_repository
+nifi.provenance.repository.directory.default=../data/provenance_repository
 nifi.provenance.repository.max.storage.time={{ nifi_provenance_repository_max_storage_time }}
 nifi.provenance.repository.max.storage.size={{ nifi_provenance_repository_max_storage_size }}
 nifi.provenance.repository.rollover.time=30 secs
@@ -166,7 +166,7 @@ nifi.cluster.flow.election.max.wait.time=5 mins
 nifi.cluster.flow.election.max.candidates=
 
 # zookeeper properties, used for cluster management #
-nifi.zookeeper.connect.string={% for h in play_hosts %}{{ h ~ ":" ~ nifi_zookeeper_clientPort }}{% if not loop.last %},{% endif %}{% endfor %}{{"\n"}} 
+nifi.zookeeper.connect.string={% for h in play_hosts|sort %}{{ h ~ ":" ~ nifi_zookeeper_clientPort }}{% if not loop.last %},{% endif %}{% endfor %}{{"\n"}} 
 nifi.zookeeper.session.timeout=3 secs
 nifi.zookeeper.root.node=/nifi
 

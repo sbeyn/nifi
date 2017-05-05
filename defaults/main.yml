@@ -13,10 +13,6 @@ nifi_bored_yield_duration: "10 millis"
 nifi_ui_autorefresh_interval: "30 sec"
 nifi_provenance_repository_max_storage_time: "24 hours"
 nifi_provenance_repository_max_storage_size: "1 GB"
-nifi_database_directory: "{{ nifi_base_directory }}/database_repository"
-nifi_flowfile_repository_directory: "{{ nifi_base_directory }}/flowfile_repository"
-nifi_content_repository_directory_default: "{{ nifi_base_directory }}/content_repository"
-nifi_provenance_repository_directory_default: "{{ nifi_base_directory }}/provenance_repository"
 nifi_remote_input_socket_port: 9998
 nifi_web_http_port: 8080
 nifi_web_https_port: 9443

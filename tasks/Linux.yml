@@ -57,6 +57,10 @@
   notify: clear auth_Linux
   tags: nifi
 
+- name: Create directories {{ nifi_install_dir }}/data/state/zookeeper require.
+  file: path={{ nifi_install_dir }}/data/state/zookeeper state=directory mode=0775
+  tags: nifi
+
 - name: Create ID Zookeeper by node. 
   template: src=templates/main/state/myid.j2 dest={{ nifi_install_dir }}/data/state/zookeeper/myid
   tags: nifi
