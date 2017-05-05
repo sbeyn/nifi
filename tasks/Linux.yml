@@ -8,10 +8,7 @@
 
 - name: Download nifi package (local).
   local_action: command curl
-    --location
     --insecure
-    --remote-name
-    --cookie-jar {{ nifi_download_dir }}/nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.tar.gz.cookie
     {{ nifi_base_mirror }}/nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.tar.gz
     chdir={{ nifi_download_dir }}
   when: not nifi_pkg.stat.exists or nifi_pkg.stat.md5 != "{{ nifi.linux_md5_checksum }}"
