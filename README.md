@@ -29,7 +29,6 @@ Then the role unarchives the package to `nifi_install_dir` of remote nodes, and 
 
 ## Role Other Variables
 
-- nifi_base_directory: ".."
 - nifi_bored_yield_duration: "10 millis"
 - nifi_ui_autorefresh_interval: "30 sec"
 - nifi_provenance.repository_max_storage_time: "24 hours"
