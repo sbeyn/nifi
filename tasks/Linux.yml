@@ -32,16 +32,21 @@
    - install nifi_Linux
   tags: nifi
 
-- name: Create directories require.
-  file: path={{ nifi_install_dir }}/{{item }} state=directory mode=0775
+- name: Create directories conf require.
+  file: path={{ nifi_install_dir }}/conf/{{item }} state=directory mode=0775 force=true
+  with_items:
+    - archive
+    - templates
+  tags: nifi
+
+- name: Create directories data require.
+  file: path={{ nifi_install_dir }}/data/{{item }} state=directory mode=0775 force=true
   with_items:
     - content_repository
     - database_repository
     - flowfile_repository
-    - logs
     - provenance_repository
-    - work
-    - run
+    - state
   tags: nifi
 
 - name: Copy files keystore and trustestore.
@@ -52,28 +57,12 @@
   notify: clear auth_Linux
   tags: nifi
 
-- name: Create nifi zookeeper state directory {{ nifi_install_dir }}/state/zookeeper.
-  file: path={{ nifi_install_dir }}/state/zookeeper state=directory mode=0775
-  tags: nifi
-
 - name: Create ID Zookeeper by node. 
-  template: src=templates/main/state/myid.j2 dest={{ nifi_install_dir }}/state/zookeeper/myid
-  tags: nifi
-
-- name: Create nifi conf directory {{ nifi_install_dir }}/conf.
-  file: path={{ nifi_install_dir }}/conf state=directory mode=0775
-  tags: nifi
-
-- name: Copy bin to remote node.
-  template: src={{ item }} dest={{ nifi_install_dir }}/{{ nifi_dir_name }}/bin/{{ item | basename | regex_replace('.j2','') }}
-  with_fileglob:
-   - templates/main/bin/*.j2
-  notify:
-   - restart nifi_Linux
+  template: src=templates/main/state/myid.j2 dest={{ nifi_install_dir }}/data/state/zookeeper/myid
   tags: nifi
 
 - name: Copy configurations to remote node.
-  template: src={{ item }} dest={{ nifi_install_dir }}/conf/{{ item | basename | regex_replace('.j2','') }}
+  template: src={{ item }} dest={{ nifi_install_dir }}/{{ nifi_dir_name }}/conf/{{ item | basename | regex_replace('.j2','') }}
   with_fileglob:
    - templates/main/conf/*.j2
    - templates/auth/{{ nifi_secure }}/conf/*.j2

@@ -29,7 +29,7 @@
     <local-provider>
         <id>local-provider</id>
         <class>org.apache.nifi.controller.state.providers.local.WriteAheadLocalStateProvider</class>
-        <property name="Directory">{{ nifi_base_directory }}/state/local</property>
+        <property name="Directory">../data/state/local</property>
     </local-provider>
 
     <!--
@@ -50,7 +50,7 @@
     <cluster-provider>
         <id>zk-provider</id>
         <class>org.apache.nifi.controller.state.providers.zookeeper.ZooKeeperStateProvider</class>
-        <property name="Connect String">{% for h in play_hosts %}{{ h ~ ":" ~ nifi_zookeeper_clientPort }}{% if not loop.last %},{% endif %}{% endfor %}</property>
+        <property name="Connect String">{% for h in play_hosts|sort %}{{ h ~ ":" ~ nifi_zookeeper_clientPort }}{% if not loop.last %},{% endif %}{% endfor %}</property>
         <property name="Root Node">/nifi</property>
         <property name="Session Timeout">10 seconds</property>
         <property name="Access Control">Open</property>

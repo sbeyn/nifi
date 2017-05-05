@@ -42,19 +42,25 @@
   check_mode: no
   tags: nifi
 
-- name: Create directories require.
-  win_file: path={{ nifi_install_dir }}\\{{item }} state=directory mode=0775
+- name: Create directories conf require.
+  win_file: path={{ nifi_install_dir }}\\conf\\{{item }} state=directory mode=0775 force=true
+  with_items:
+    - archive
+    - templates
+  tags: nifi
+
+- name: Create directories data require.
+  win_file: path={{ nifi_install_dir }}\\data\\{{item }} state=directory mode=0775 force=true
   with_items:
     - content_repository
     - database_repository
     - flowfile_repository
-    - logs
     - provenance_repository
-    - work
+    - state
   tags: nifi
 
 - name: Start Apache Nifi Windows Service. 
-  win_nssm: name=NifiService application="C:\\Program Files\\nifi\\nifi-1.1.2\\bin\\run-nifi.bat" start_mode=manual user="{{ansible_env.USERDOMAIN}}\\{{ansible_user_id}}" password={{ansible_ssh_pass}}
+  win_nssm: name=NifiService application="{{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\run-nifi.bat" start_mode=manual user="{{ansible_env.USERDOMAIN}}\\{{ansible_user_id}}" password={{ansible_ssh_pass}}
   ignore_errors: true
   check_mode: no
   tags: nifi
@@ -68,31 +74,13 @@
   when: nifi_auto_keystore
   tags: nifi
 
-- name: Create nifi zookeeper state directory {{ nifi_install_dir }}\\state\\zookeeper.
-  win_file: path={{ nifi_install_dir }}\\state\\zookeeper state=directory mode=0775
-  check_mode: no
-  tags: nifi
-
 - name: Create ID Zookeeper by node.
-  win_template: src=templates/main/state/myid.j2 dest={{ nifi_install_dir }}\\state\\zookeeper\\myid
+  win_template: src=templates/main/state/myid.j2 dest={{ nifi_install_dir }}\\data\\state\\zookeeper\\myid
   check_mode: no
-  tags: nifi
-
-- name: Create nifi zookeeper state directory {{ nifi_install_dir }}\\conf.
-  win_file: path={{ nifi_install_dir }}\\conf state=directory mode=0775
-  check_mode: no
-  tags: nifi
-
-- name: Copy bin to remote node.
-  win_template: src={{ item }} dest={{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\{{ item | basename | regex_replace('.j2','') }}
-  with_fileglob:
-   - templates/main/bin/*.j2
-  notify:
-   - restart nifi_Windows
   tags: nifi
 
 - name: Copy conf to remote node.
-  win_template: src={{ item }} dest={{ nifi_install_dir }}\\conf\\{{ item | basename | regex_replace('.j2','') }}
+  win_template: src={{ item }} dest={{ nifi_install_dir }}\\{{ nifi_dir_name }}\\conf\\{{ item | basename | regex_replace('.j2','') }}
   with_fileglob:
    - templates/main/conf/*.j2
    - templates/auth/{{ nifi_secure }}/conf/*.j2
