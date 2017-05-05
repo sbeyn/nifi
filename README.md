@@ -92,7 +92,7 @@ None.
     - hosts: your-servers
       sudo: yes
       roles:
-        - { role: nifi, install_dir: /usr/local }
+        - { role: nifi, nifi_install_dir: /usr/local }
 
     - hosts: your-servers
       sudo:
