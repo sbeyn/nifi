@@ -24,7 +24,7 @@ Then the role unarchives the package to `nifi_install_dir` of remote nodes, and 
 2. `nifi_download_dir` (default: `/tmp/nifi`): the folder to save nifi package in local machine.
 3. `nifi_install_dir` (default: `{{ansible_env['HOME']}}`): the path that you want to install the nifi to in remote nodes.
 4. `nifi_cluster` (default: `false`): this option active the mode cluster and zookeeper embed for remote node. 
-5. `nifi_secure` (default: `none`): options: none, certificates, ldap and kerberos.
+5. `nifi_secure` (default: `none`): options: none, certs, ldap and kerberos.
 6. `nifi_auto_keystore` (default: `true`) generate pki for all nodes and init admin certificate.
 
 ## Role Other Variables
@@ -107,7 +107,7 @@ None.
     - hosts: your-servers
       sudo:
       roles:
-        - { role: nifi, nifi_cluster: true, nifi_secure: certificates, nifi_auto_keystore: true }
+        - { role: nifi, nifi_cluster: true, nifi_secure: certs, nifi_auto_keystore: true }
 
 ## License
 
