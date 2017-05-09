@@ -69,6 +69,7 @@ Then the role unarchives the package to `nifi_install_dir` of remote nodes, and 
 - nifi_variable_registry_properties:
 - nifi_jvm_xms: 512m
 - nifi_jvm_xmx: 512m
+- nifi_authorizations_clear: false
 - nifi_authorizer_dn: "OU=NIFI"
 - nifi_authorizer_rules:
 -   "CN=admininit, {{ nifi_authorizer_dn }}":
