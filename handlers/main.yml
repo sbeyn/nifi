@@ -1,24 +1,26 @@
 ---
 - name: clear auth_Linux
-  file: path='{{ nifi_install_dir }}/{{ nifi_dir_name }}/conf/{{ item }}' state=absent
+  file: path='{{ nifi_install_dir }}/conf/{{ item }}' state=absent
   with_items:
     - users.xml
     - authorizations.xml
+  when: nifi_authorizations_clear
 
 - name: clear auth_Windows
-  win_file: path='{{ nifi_install_dir }}\\{{ nifi_dir_name }}\\conf\\{{ item }}' state=absent
+  win_file: path='{{ nifi_install_dir }}\\conf\\{{ item }}' state=absent
   with_items:
     - users.xml
     - authorizations.xml
-
-- name: install nifi_Linux
-  shell: '{{ nifi_install_dir }}/{{ nifi_dir_name }}/bin/nifi.sh install'
+  when: nifi_authorizations_clear
 
 - name: install nifi_Windows
-  win_nssm: name=NifiService state=started
+  win_nssm: name=NifiService application="{{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\run-nifi.bat" start_mode=auto state=started
+
+- name: reload systemd
+  shell: systemctl daemon-reload
 
 - name: restart nifi_Linux
-  service: name=nifi state=restarted
+  systemd: name={{nifi_service_name}} state=restarted
 
 - name: restart nifi_Windows
-  win_nssm: name=NifiService application="{{ nifi_install_dir }}\\{{ nifi_dir_name }}\\bin\\run-nifi.bat" start_mode=auto state=restarted
+  win_service: name=NifiService state=restarted

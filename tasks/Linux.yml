@@ -18,29 +18,43 @@
   tags:
     - nifi
 
+- name: Set Group Apache Nifi.
+  group: name={{ nifi_group }} state=present
+  tags: nifi
+
+- name: Set User Apache Nifi.
+  user:
+    name: "{{ nifi_user }}"
+    group: "{{ nifi_group }}"
+    home: "{{ nifi_install_dir }}"
+    state: present
+    system: yes
+  tags: nifi
+
 - name: Check nifi install dir {{ nifi_install_dir }}.
-  file: state=directory mode=0755 path={{ nifi_install_dir }}
+  file: state=directory mode=0755 owner={{ nifi_user }} group={{ nifi_group }} path={{ nifi_install_dir }}
   tags: nifi
 
 - name: Install nifi to remote node.
   unarchive:
     src={{ nifi_download_dir }}/nifi-{{ nifi.major_version }}.{{ nifi.minor_version }}.{{ nifi.patch_version }}-bin.tar.gz
     dest={{ nifi_install_dir }}
-    mode=0755
     creates={{ nifi_install_dir }}/{{ nifi_dir_name }}
-  notify:
-   - install nifi_Linux
+  tags: nifi
+
+- name: Change permissions base Apache Nifi directory.
+  file: dest={{ nifi_install_dir }}/{{ nifi_dir_name }} owner={{ nifi_user }} group={{ nifi_group }} recurse=yes
   tags: nifi
 
 - name: Create directories conf require.
-  file: path={{ nifi_install_dir }}/conf/{{item }} state=directory mode=0775 force=true
+  file: path={{ nifi_install_dir }}/conf/{{item }} state=directory mode=0775 owner={{ nifi_user }} group={{ nifi_group }} force=true
   with_items:
     - archive
     - templates
   tags: nifi
 
 - name: Create directories data require.
-  file: path={{ nifi_install_dir }}/data/{{item }} state=directory mode=0775 force=true
+  file: path={{ nifi_install_dir }}/data/{{item }} state=directory mode=0775 owner={{ nifi_user }} group={{ nifi_group }} force=true
   with_items:
     - content_repository
     - database_repository
@@ -49,27 +63,61 @@
     - state
   tags: nifi
 
+- name: Install nifi to remote node.
+  file:
+    src: "{{ nifi_install_dir }}/{{ nifi_dir_name }}"
+    dest: "{{ nifi_install_dir }}/nifi-latest"
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_group }}"
+    state: link
+  tags: nifi
+
+- name: Systemd nifi.service to remote node.
+  template:
+    src: "{{role_path}}/templates/systemd/nifi.service.j2"
+    dest: /etc/systemd/system/{{nifi_service_name}}.service
+    owner: root
+    group: root
+  notify:
+   - reload systemd
+
+- name: Enable service Apache nifi
+  systemd:
+    name: "{{nifi_service_name}}"
+    enabled: yes
+    state: started
+  tags: nifi
+
 - name: Copy files keystore and trustestore.
   copy:
     src: "{{ nifi_download_dir }}/pki/{{ nifi_authorizer_dn }}/{{ inventory_hostname }}"
     dest: "{{ nifi_install_dir }}/jks"
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_group }}"
   when: nifi_auto_keystore
-  notify: clear auth_Linux
   tags: nifi
 
 - name: Create directories {{ nifi_install_dir }}/data/state/zookeeper require.
-  file: path={{ nifi_install_dir }}/data/state/zookeeper state=directory mode=0775
+  file: path={{ nifi_install_dir }}/data/state/zookeeper state=directory mode=0775 owner={{ nifi_user }} group={{ nifi_group }}
   tags: nifi
 
 - name: Create ID Zookeeper by node. 
-  template: src=templates/main/state/myid.j2 dest={{ nifi_install_dir }}/data/state/zookeeper/myid
+  template: src={{role_path}}/templates/main/state/myid.j2 dest={{ nifi_install_dir }}/data/state/zookeeper/myid owner={{ nifi_user }} group={{ nifi_group }}
+  tags: nifi
+
+- name: Copy authorized-users.xml to remote node.
+  template: src={{role_path}}/templates/auth/authorized-users.xml.j2 dest={{ nifi_install_dir }}/conf/authorized-users.xml owner={{ nifi_user }} group={{ nifi_group }}
+  notify:
+   - clear auth_Linux
+   - restart nifi_Linux
   tags: nifi
 
 - name: Copy configurations to remote node.
-  template: src={{ item }} dest={{ nifi_install_dir }}/{{ nifi_dir_name }}/conf/{{ item | basename | regex_replace('.j2','') }}
+  template: src={{ item }} dest={{ nifi_install_dir }}/{{ nifi_dir_name }}/conf/{{ item | basename | regex_replace('.j2','') }} owner={{ nifi_user }} group={{ nifi_group }}
   with_fileglob:
-   - templates/main/conf/*.j2
-   - templates/auth/{{ nifi_secure }}/conf/*.j2
+   - "{{role_path}}/templates/main/conf/*.j2"
+   - "{{role_path}}/templates/auth/{{ nifi_secure }}/conf/*.j2"
   notify:
+   - clear auth_Linux
    - restart nifi_Linux
   tags: nifi

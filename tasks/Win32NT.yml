@@ -70,7 +70,6 @@
     src: "{{ nifi_download_dir }}/pki/{{ nifi_authorizer_dn }}/{{ inventory_hostname }}"
     dest: "{{ nifi_install_dir }}\\jks"
   check_mode: no
-  notify: clear auth_Windows
   when: nifi_auto_keystore
   tags: nifi
 
@@ -83,12 +82,19 @@
   check_mode: no
   tags: nifi
 
+- name: Copy authorized-users.xml to remote node.
+  win_template: src=templates/auth/authorized-users.xml.j2 dest={{ nifi_install_dir }}\\conf\\authorized-users.xml
+  notify:
+   - restart nifi_Windows
+  tags: nifi
+
 - name: Copy conf to remote node.
   win_template: src={{ item }} dest={{ nifi_install_dir }}\\{{ nifi_dir_name }}\\conf\\{{ item | basename | regex_replace('.j2','') }}
   with_fileglob:
    - templates/main/conf/*.j2
    - templates/auth/{{ nifi_secure }}/conf/*.j2
   check_mode: no
-  notify: 
+  notify:
+    - clear auth_Windows 
     - restart nifi_Windows
   tags: nifi

@@ -3,7 +3,7 @@ galaxy_info:
   author: sbeyn
   description: Install Apache Nifi for RHEL/CentOS, Debian/Ubuntu and Windows 
   license: "license (MIT)"
-  min_ansible_version: 1.8
+  min_ansible_version: 2.2.0
   platforms:
   - name: Windows
     versions:
@@ -11,16 +11,16 @@ galaxy_info:
     - 2012
   - name: Debian
     versions:
-    - all
+    - debian > 7
   - name: Ubuntu
     versions:
-    - all
+    - Ubuntu > 15.04
   - name: CentOS
     versions:
-    - all
+    - CentOS > 7
   - name: RedHat
     versions:
-    - all
+    - REL > 7
   categories:
     - development
     - system
